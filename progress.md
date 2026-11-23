@@ -61,8 +61,19 @@ warehouse.packagetypes_archive (genuinely empty archives; they were 0 rows in th
 - Planned run order: generate + export (0 LLM) -> answers smoke test A1 -> rest of answers -> refusal -> certify -> mcp.
 - NOT yet verified: whether the answering agent also hits the 400 `guided_json` structured-output error seen during compilation.
 
+## README (written 2026-11-23, locally only, NOT yet committed or pushed)
+- README.md rewritten (was a 1-line GitHub stub): status table, repo layout, safety rules, setup 1-7, test table with LLM-cost
+  estimates, ground-truth questions, findings, troubleshooting, cleanup. Status table is honest: only security, ground truth,
+  stack and seed are marked verified; generate/answers/refusal/certify/mcp/export are "written, not run yet".
+- seed.ps1 added (the seed command I ran by hand, plus a count check). Parse-checked and its expected counts match the live DB;
+  NOT re-run (it drops/recreates the sample DB for no benefit).
+- Checks: secret scan of all publishable files = clean; uv lock --check OK; README path references OK
+  (expected-missing: RESULTS.md, results/ask_log.jsonl, NVIDIA's seed_wwi.py).
+- add-token.ps1 is still UNCONFIRMED (the token never appeared in .env during this project); README says so.
+- User pushed the first version to GitHub (main, 2 commits); git history shows "Initial commit" + "Initial commit: Auto Ontology test harness".
+
 Not done yet:
-- Run Step 4 tests with a token, Step 5 RESULTS.md/README.md
+- Run Step 4 tests with a token (blocked on API token in .env), then Step 5 RESULTS.md
 - (done) User signed in and turned on Semantic Compilation
 - UI check in a browser (only HTTP-level check done so far)
 - Build and start stack (large download: ask first), health, UI, port binding check

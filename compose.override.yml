@@ -1,0 +1,21 @@
+# Local-only overrides for auto-ontology/docker-compose.yml (the cloned repo is NOT modified).
+# Compose normally APPENDS port lists; "!override" replaces them, so every port below is
+# bound to 127.0.0.1 only. The README warns that ports 3001/3002 have no authentication.
+services:
+  postgres:
+    ports: !override
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+  auto-ontology:
+    ports: !override
+      - "127.0.0.1:3001:3001"
+  ingestion-service:
+    ports: !override
+      - "127.0.0.1:3002:3002"
+  auto-ontology-frontend:
+    ports: !override
+      - "127.0.0.1:3000:3000"
+  # pgAdmin is not needed for this test: keep it off (it is only started with --profile pgadmin-off).
+  pgadmin:
+    profiles: ["pgadmin-off"]
+    ports: !override
+      - "127.0.0.1:5050:80"

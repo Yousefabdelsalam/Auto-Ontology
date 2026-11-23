@@ -1,0 +1,162 @@
+{
+  "generated_at": "2026-11-22T14:23:00+00:00",
+  "database": "wideworldimporters (sample data, direct SQL)",
+  "fingerprint": {
+    "invoices": 70510,
+    "invoicelines": 228265
+  },
+  "definitions": {
+    "revenue": "SUM(sales.invoicelines.extendedprice)",
+    "state": "state of the customer's delivery city",
+    "date_filter": "sales.invoices.invoicedate"
+  },
+  "answerable": [
+    {
+      "id": "A1",
+      "question": "What was the revenue for the 20 mm Double sided bubble wrap 50m in Texas in March 2015?",
+      "kind": "scalar",
+      "tolerance": {
+        "abs": 0.01
+      },
+      "sql": "SELECT ROUND(SUM(il.extendedprice), 2) \nFROM sales.invoicelines il\nJOIN sales.invoices i          ON i.invoiceid = il.invoiceid\nJOIN warehouse.stockitems si   ON si.stockitemid = il.stockitemid\nJOIN sales.customers c         ON c.customerid = i.customerid\nJOIN sales.customercategories cc ON cc.customercategoryid = c.customercategoryid\nJOIN application.cities ct     ON ct.cityid = c.deliverycityid\nJOIN application.stateprovinces sp ON sp.stateprovinceid = ct.stateprovinceid\n WHERE si.stockitemname = '20 mm Double sided bubble wrap 50m' AND sp.stateprovincename = 'Texas' AND i.invoicedate >= '2015-03-01' AND i.invoicedate < '2015-04-01'",
+      "expected": 36018.0
+    },
+    {
+      "id": "A2",
+      "question": "How many invoice lines were there on invoices dated in March 2016?",
+      "kind": "scalar",
+      "tolerance": {
+        "abs": 0
+      },
+      "sql": "SELECT COUNT(*) \nFROM sales.invoicelines il\nJOIN sales.invoices i          ON i.invoiceid = il.invoiceid\nJOIN warehouse.stockitems si   ON si.stockitemid = il.stockitemid\nJOIN sales.customers c         ON c.customerid = i.customerid\nJOIN sales.customercategories cc ON cc.customercategoryid = c.customercategoryid\nJOIN application.cities ct     ON ct.cityid = c.deliverycityid\nJOIN application.stateprovinces sp ON sp.stateprovinceid = ct.stateprovinceid\n WHERE i.invoicedate >= '2016-03-01' AND i.invoicedate < '2016-04-01'",
+      "expected": 6074
+    },
+    {
+      "id": "A3",
+      "question": "What was the total revenue from customers in the Gift Store category in 2015?",
+      "kind": "scalar",
+      "tolerance": {
+        "abs": 0.01
+      },
+      "sql": "SELECT ROUND(SUM(il.extendedprice), 2) \nFROM sales.invoicelines il\nJOIN sales.invoices i          ON i.invoiceid = il.invoiceid\nJOIN warehouse.stockitems si   ON si.stockitemid = il.stockitemid\nJOIN sales.customers c         ON c.customerid = i.customerid\nJOIN sales.customercategories cc ON cc.customercategoryid = c.customercategoryid\nJOIN application.cities ct     ON ct.cityid = c.deliverycityid\nJOIN application.stateprovinces sp ON sp.stateprovinceid = ct.stateprovinceid\n WHERE cc.customercategoryname = 'Gift Store' AND i.invoicedate >= '2015-01-01' AND i.invoicedate < '2016-01-01'",
+      "expected": 4484174.95
+    },
+    {
+      "id": "A4",
+      "question": "Which are the top 3 stock items by total revenue across all time? List their names.",
+      "kind": "list",
+      "tolerance": {
+        "rel": 0.001
+      },
+      "sql": "SELECT si.stockitemname, ROUND(SUM(il.extendedprice), 2) AS revenue \nFROM sales.invoicelines il\nJOIN sales.invoices i          ON i.invoiceid = il.invoiceid\nJOIN warehouse.stockitems si   ON si.stockitemid = il.stockitemid\nJOIN sales.customers c         ON c.customerid = i.customerid\nJOIN sales.customercategories cc ON cc.customercategoryid = c.customercategoryid\nJOIN application.cities ct     ON ct.cityid = c.deliverycityid\nJOIN application.stateprovinces sp ON sp.stateprovinceid = ct.stateprovinceid\n  GROUP BY si.stockitemname ORDER BY SUM(il.extendedprice) DESC LIMIT 3",
+      "expected": [
+        {
+          "name": "Air cushion machine (Blue)",
+          "value": 12773338.65
+        },
+        {
+          "name": "32 mm Anti static bubble wrap (Blue) 50m",
+          "value": 7341600.0
+        },
+        {
+          "name": "10 mm Anti static bubble wrap (Blue) 50m",
+          "value": 7278430.5
+        }
+      ]
+    },
+    {
+      "id": "A5",
+      "question": "What was the average revenue per invoice line in 2015?",
+      "kind": "scalar",
+      "tolerance": {
+        "rel": 0.001
+      },
+      "sql": "SELECT ROUND(AVG(il.extendedprice), 4) \nFROM sales.invoicelines il\nJOIN sales.invoices i          ON i.invoiceid = il.invoiceid\nJOIN warehouse.stockitems si   ON si.stockitemid = il.stockitemid\nJOIN sales.customers c         ON c.customerid = i.customerid\nJOIN sales.customercategories cc ON cc.customercategoryid = c.customercategoryid\nJOIN application.cities ct     ON ct.cityid = c.deliverycityid\nJOIN application.stateprovinces sp ON sp.stateprovinceid = ct.stateprovinceid\n WHERE i.invoicedate >= '2015-01-01' AND i.invoicedate < '2016-01-01'",
+      "expected": 863.5876
+    },
+    {
+      "id": "A6",
+      "question": "How many distinct customers were invoiced in 2015?",
+      "kind": "scalar",
+      "tolerance": {
+        "abs": 0
+      },
+      "sql": "SELECT COUNT(DISTINCT i.customerid) \nFROM sales.invoicelines il\nJOIN sales.invoices i          ON i.invoiceid = il.invoiceid\nJOIN warehouse.stockitems si   ON si.stockitemid = il.stockitemid\nJOIN sales.customers c         ON c.customerid = i.customerid\nJOIN sales.customercategories cc ON cc.customercategoryid = c.customercategoryid\nJOIN application.cities ct     ON ct.cityid = c.deliverycityid\nJOIN application.stateprovinces sp ON sp.stateprovinceid = ct.stateprovinceid\n WHERE i.invoicedate >= '2015-01-01' AND i.invoicedate < '2016-01-01'",
+      "expected": 657
+    }
+  ],
+  "certify": {
+    "id": "C1",
+    "question": "What was the gross margin percentage across all invoice lines in 2015?",
+    "kind": "scalar",
+    "tolerance": {
+      "abs": 0.05
+    },
+    "definition": "gross margin % = SUM(lineprofit) / SUM(extendedprice) * 100",
+    "sql": "SELECT ROUND(SUM(il.lineprofit) / SUM(il.extendedprice) * 100, 4) \nFROM sales.invoicelines il\nJOIN sales.invoices i          ON i.invoiceid = il.invoiceid\nJOIN warehouse.stockitems si   ON si.stockitemid = il.stockitemid\nJOIN sales.customers c         ON c.customerid = i.customerid\nJOIN sales.customercategories cc ON cc.customercategoryid = c.customercategoryid\nJOIN application.cities ct     ON ct.cityid = c.deliverycityid\nJOIN application.stateprovinces sp ON sp.stateprovinceid = ct.stateprovinceid\n WHERE i.invoicedate >= '2015-01-01' AND i.invoicedate < '2016-01-01'",
+    "expected": 43.4168
+  },
+  "unanswerable": [
+    {
+      "id": "U1",
+      "question": "What was our total advertising spend in 2015?",
+      "expected_behavior": "say it cannot answer or ask for clarification; no invented number"
+    },
+    {
+      "id": "U2",
+      "question": "What is the average employee satisfaction score by department?",
+      "expected_behavior": "say it cannot answer or ask for clarification; no invented number"
+    },
+    {
+      "id": "U3",
+      "question": "What will the weather be like next year in the cities where our customers are located?",
+      "expected_behavior": "say it cannot answer or ask for clarification; no invented number"
+    }
+  ],
+  "ambiguous": [
+    {
+      "id": "B1",
+      "question": "Who is our best customer?",
+      "interpretations": [
+        {
+          "reading": "by revenue",
+          "sql": "SELECT c.customername FROM sales.invoicelines il JOIN sales.invoices i ON i.invoiceid=il.invoiceid JOIN sales.customers c ON c.customerid=i.customerid GROUP BY c.customername ORDER BY SUM(il.extendedprice) DESC LIMIT 1",
+          "result": "Tailspin Toys (Inguadona, MN)"
+        },
+        {
+          "reading": "by profit",
+          "sql": "SELECT c.customername FROM sales.invoicelines il JOIN sales.invoices i ON i.invoiceid=il.invoiceid JOIN sales.customers c ON c.customerid=i.customerid GROUP BY c.customername ORDER BY SUM(il.lineprofit) DESC LIMIT 1",
+          "result": "Tailspin Toys (Inguadona, MN)"
+        },
+        {
+          "reading": "by number of invoices",
+          "sql": "SELECT c.customername FROM sales.invoices i JOIN sales.customers c ON c.customerid=i.customerid GROUP BY c.customername ORDER BY COUNT(*) DESC, c.customername LIMIT 1",
+          "result": "Bhaavan Rai"
+        }
+      ],
+      "expected_behavior": "ask which metric is meant (answering with an explicitly stated assumption is reported separately)"
+    },
+    {
+      "id": "B2",
+      "question": "Which product is the most popular?",
+      "interpretations": [
+        {
+          "reading": "by revenue",
+          "sql": "SELECT si.stockitemname FROM sales.invoicelines il JOIN warehouse.stockitems si ON si.stockitemid=il.stockitemid GROUP BY si.stockitemname ORDER BY SUM(il.extendedprice) DESC LIMIT 1",
+          "result": "Air cushion machine (Blue)"
+        },
+        {
+          "reading": "by units sold",
+          "sql": "SELECT si.stockitemname FROM sales.invoicelines il JOIN warehouse.stockitems si ON si.stockitemid=il.stockitemid GROUP BY si.stockitemname ORDER BY SUM(il.quantity) DESC LIMIT 1",
+          "result": "Black and orange fragile despatch tape 48mmx75m"
+        },
+        {
+          "reading": "by number of invoice lines",
+          "sql": "SELECT si.stockitemname FROM sales.invoicelines il JOIN warehouse.stockitems si ON si.stockitemid=il.stockitemid GROUP BY si.stockitemname ORDER BY COUNT(*) DESC, si.stockitemname LIMIT 1",
+          "result": "Alien officer hoodie (Black) 3XL"
+        }
+      ],
+      "expected_behavior": "ask which metric is meant (answering with an explicitly stated assumption is reported separately)"
+    }
+  ]
+}

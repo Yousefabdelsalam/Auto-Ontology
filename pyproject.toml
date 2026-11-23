@@ -1,0 +1,26 @@
+[project]
+name = "auto-ontology-test"
+version = "0.1.0"
+description = "Small test harness for NVIDIA Auto Ontology (sample data only)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "psycopg[binary]>=3.2",   # direct SQL ground truth (never goes through Auto Ontology)
+    "requests>=2.32",         # REST chat endpoint + API calls
+    "pyyaml>=6.0",            # validate the exported Ossie YAML
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+    "auto-ontology/mcp",
+]
+
+[tool.uv.sources]
+auto-ontology-mcp = { workspace = true }
+
+[dependency-groups]
+mcp = [
+    "auto-ontology-mcp",
+]

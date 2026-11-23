@@ -1,0 +1,6 @@
+.env
+**/.env
+.venv/
+__pycache__/
+auto-ontology/
+auto-ontology-eval/
